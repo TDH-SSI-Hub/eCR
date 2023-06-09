@@ -2,7 +2,7 @@
 
 This is a repository for eICR parser programs used to parse data from eICR files. This is a bit rough and will need some adaptation to elsewhere.
 
-## [eICRMissingDataDashGrabber.py](eICRMissingDatadashGrabber.py)
+## [eICRMissingDataDashGrabber.py](eICRMissingDataDashGrabber.py)
 This file is for daily grabbing of yesterday's data.
 
 ## [eICRMissingDataDashGrabberBackfiller2.py](eICRMissingDataDashGrabberBackfiller2.py)
