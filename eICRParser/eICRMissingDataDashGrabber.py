@@ -505,7 +505,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     else:
                         self.document.patient.language = None
             # This grabs birth date
-            if self.currentData == "birthTime":
+            if self.currentData == "birthTime" and "value" in attributes.getNames():
                 self.document.patient.dob = attributes["value"]
 
             # This grabs marital status
@@ -1637,7 +1637,9 @@ if (__name__== "__main__"):
                                         pat.telecom as pat_telecom,\
                                         gc.display_name AS gender_display,\
                                         pat.pat_language,\
-                                        pat.dob,\
+                                        case\
+                                            when pat.dob = '-1' then NULL\
+                                            else pat.dob end as dob,\
                                         rc.display_name AS race_display,\
                                         ec.display_name AS ethnicity_display,\
                                         prov.org_name,\
@@ -1656,7 +1658,9 @@ if (__name__== "__main__"):
                                         doc.dischargeDispositionCode,\
                                         hcf.org_name as health_care_facility,\
                                         spo.org_name as service_provider_organization,\
-                                        datediff(YEAR, pat.dob, doc.date_added) as age,\
+                                        case \
+                                            when Try_convert(date, pat.dob) is NULL then '-1' \
+                                            else datediff(YEAR, pat.dob, doc.date_added) end as age,\
                                         doc.eE as eEncounter,\
                                         doc.eECode as eEncounter_code,\
                                         ee.display_name as eEncounter_display,\
@@ -1828,15 +1832,18 @@ if (__name__== "__main__"):
 
  
     sandboxCursor = sandbox_conn.cursor()
-    
+    print("Running Aggregate Results")
     sandboxCursor.execute(agg_results_query)
+    
     sandboxCursor.commit()
     sandboxCursor.execute("DELETE FROM eICR_FinalResults2")
     sandboxCursor.commit()
     sandboxCursor.execute("DELETE FROM eICR_Missing_Data_Summary2")
     sandboxCursor.commit()
+    print("Running Final Results")
     sandboxCursor.execute(final_results_query)
     sandboxCursor.commit()
+    print("Running Missing Data Summary")
     sandboxCursor.execute(missingDataQuery)
     sandboxCursor.commit()
     sandboxCursor.close()

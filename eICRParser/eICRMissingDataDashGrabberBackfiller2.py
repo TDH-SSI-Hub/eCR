@@ -516,7 +516,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     else:
                         self.document.patient.language = None
             # This grabs birth date
-            if self.currentData == "birthTime":
+            if self.currentData == "birthTime" and "value" in attributes.getNames():
                 self.document.patient.dob = attributes["value"]
 
             # This grabs marital status
@@ -528,6 +528,8 @@ class EICRHandler(xml.sax.ContentHandler):
                     self.document.patient.maritalStatus.displayName) = (attributes['code'], attributes['codeSystem'], attributes['codeSystemName'], attributes['displayName'])
                 elif 'code' in attributes.getNames() and 'codeSystem' in attributes.getNames():
                     (self.document.patient.maritalStatus.code,
+
+
                     self.document.patient.maritalStatus.codeSystem, 
                     self.document.patient.maritalStatus.codeSystemName,
                     self.document.patient.maritalStatus.displayName) = (attributes['code'], attributes['codeSystem'], None, None)
@@ -1444,7 +1446,7 @@ if (__name__== "__main__"):
     prod_conn = pyodbc.connect(r"DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.11.24.23;DATABASE=nbs_msgoute;Trusted_Connection=yes")
     output_connection = pyodbc.connect(r'DRIVER={ODBC Driver 17 for SQL Server};SERVER=Prodsqlsdc.tn.gov,2588;DATABASE=DC_CEDEP_Sandbox_SSI;Trusted_Connection=yes')
     #These are the actual locations
-    zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-04\\2023-04-06" 
+    zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16" 
     outputloc = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp\\temp2"
     #These are the test locations
     #zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp2" 
@@ -1465,7 +1467,7 @@ if (__name__== "__main__"):
                 """                
 
 
-    query  = f"SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where add_time >= '4/06/2023' and add_time <= '4/07/2023' and original_payload is not NULL and record_status_cd = 'SUCCESS'"
+    query  = f"SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where add_time >= '6/16/2023' and add_time <= '6/17/2023' and original_payload is not NULL and record_status_cd = 'SUCCESS'"
     #query = "SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where original_payload like '%1.2.840.114350.1.13.478.2.7.5.737384.61.1970237346163.840539006%'"
     
     #Create Cursors
@@ -1484,7 +1486,7 @@ if (__name__== "__main__"):
     
     zipStart = time.time()
     print("\nStarting Zipped Parsing\n")
-    uf.set_wdir("J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-04\\2023-04-06\\")
+    uf.set_wdir("J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16\\")
     cwd = os.getcwd()
 
     processedFilesQuery = "SELECT original_OID FROM eICR_documents2 with (NOLOCK)"
@@ -1795,7 +1797,9 @@ if (__name__== "__main__"):
                                         pat.telecom as pat_telecom,\
                                         gc.display_name AS gender_display,\
                                         pat.pat_language,\
-                                        pat.dob,\
+                                        case\
+                                            when pat.dob = '-1' then NULL\
+                                            else pat.dob end as dob,\
                                         rc.display_name AS race_display,\
                                         ec.display_name AS ethnicity_display,\
                                         prov.org_name,\
@@ -1814,7 +1818,9 @@ if (__name__== "__main__"):
                                         doc.dischargeDispositionCode,\
                                         hcf.org_name as health_care_facility,\
                                         spo.org_name as service_provider_organization,\
-                                        datediff(YEAR, pat.dob, doc.date_added) as age,\
+                                        case \
+                                            when Try_convert(date, pat.dob) is NULL then '-1' \
+                                            else datediff(YEAR, pat.dob, doc.date_added) end as age,\
                                         doc.eE as eEncounter,\
                                         doc.eECode as eEncounter_code,\
                                         ee.display_name as eEncounter_display,\
