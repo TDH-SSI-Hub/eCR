@@ -7,7 +7,8 @@ Some of the biggest challenges faced include differences in the XML between elec
 
 ## Table of Contents
 ### 1. [eICRMissingDataDashGrabber.py](eICRMissingDataDashGrabber.py)
-This file is for daily grabbing of yesterday's data.
+This file is for daily grabbing of the previous day's data.
 
 ### 2. [eICRMissingDataDashGrabberBackfiller2.py](eICRMissingDataDashGrabberBackfiller2.py)
 This file is for backfilling data and dates need to be manually supplied.
+### 3. 
