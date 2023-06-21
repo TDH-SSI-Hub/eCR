@@ -1,8 +1,12 @@
-# eICR Parser
+# Tennessee eICR Parser
 
-This is a repository for eICR parser programs used to parse data from eICR files. This is a bit rough and will need some adaptation to elsewhere.
+## Description
+These programs create relational tables in a database using the SQL code and populate those tables with data from eICR records stored a CDA compliant XML. The parser program uses Python and SAX parsing to extract information from the XML.
 
-## [eICRMissingDataDashGrabber.py](eICRMissingDataDashGrabber.py)
+Some of the biggest challenges faced include differences in the XML between electronic health record providers and health care organizations.
+
+## Table of Contents
+### [eICRMissingDataDashGrabber.py](eICRMissingDataDashGrabber.py)
 This file is for daily grabbing of yesterday's data.
 
 ## [eICRMissingDataDashGrabberBackfiller2.py](eICRMissingDataDashGrabberBackfiller2.py)
