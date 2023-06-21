@@ -6,8 +6,8 @@ These programs create relational tables in a database using the SQL code and pop
 Some of the biggest challenges faced include differences in the XML between electronic health record providers and health care organizations.
 
 ## Table of Contents
-### [eICRMissingDataDashGrabber.py](eICRMissingDataDashGrabber.py)
+### 1. [eICRMissingDataDashGrabber.py](eICRMissingDataDashGrabber.py)
 This file is for daily grabbing of yesterday's data.
 
-## [eICRMissingDataDashGrabberBackfiller2.py](eICRMissingDataDashGrabberBackfiller2.py)
+### 2. [eICRMissingDataDashGrabberBackfiller2.py](eICRMissingDataDashGrabberBackfiller2.py)
 This file is for backfilling data and dates need to be manually supplied.
