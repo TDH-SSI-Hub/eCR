@@ -11,4 +11,8 @@ This file is for daily grabbing of the previous day's data.
 
 ### 2. [eICRMissingDataDashGrabberBackfiller2.py](eICRMissingDataDashGrabberBackfiller2.py)
 This file is for backfilling data and dates need to be manually supplied.
-### 3. 
+
+### 3. [TableCreation.sql](tableCreation.sql)
+This file creates the tables where the parser data is stored.
+
+
