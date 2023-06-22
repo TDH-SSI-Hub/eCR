@@ -9,7 +9,7 @@ Some of the biggest challenges faced include differences in the XML between elec
 ### 1. [eICRMissingDataDashGrabber.py](python/eICRMissingDataDashGrabber.py)
 This file is for daily grabbing of the previous day's data.
 
-### 2. [eICRMissingDataDashGrabberBackfiller2.py](python/eICRMissingDataDashGrabberBackfiller2.py)
+### 2. [eICRMissingDataDashGrabberBackfiller2.py](python/eICRMissingDataDashGrabberBackfiller.py)
 This file is for backfilling data and dates need to be manually supplied.
 
 ### 3. [TableCreation.sql](SQL/TableCreation.sql)
@@ -41,7 +41,8 @@ This file creates the tables where the parser data is stored.
   * 1477-1546 - Remove or comment these out if you don't have or don't want to use an NBS staging database for parsing
   * 1550-1614 - Remove or comment these out if you don't have or don't want to use an NBS production database for parsing
   * 1624 - Change for the database location where you will be putting the parsed data
-3. Run the program and trouble shoot as required
+4. Run the program and trouble shoot as required
+5. If using the [backfilling script](python/eICRMissingDataGrabberBackfiller.py) update the corresponding 
 
 
 
