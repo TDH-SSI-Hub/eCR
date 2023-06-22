@@ -1378,9 +1378,9 @@ class payloadParser(xml.sax.ContentHandler):
 
 if (__name__== "__main__"):
 
-    staging_conn = pyodbc.connect(r"DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.11.25.16;DATABASE=nbs_msgoute;Trusted_Connection=yes")
-    prod_conn = pyodbc.connect(r"DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.11.24.23;DATABASE=nbs_msgoute;Trusted_Connection=yes")
-    output_connection = pyodbc.connect(r'DRIVER={ODBC Driver 17 for SQL Server};SERVER=Prodsqlsdc.tn.gov,2588;DATABASE=DC_CEDEP_Sandbox_SSI;Trusted_Connection=yes')
+    staging_conn = pyodbc.connect(r"")
+    prod_conn = pyodbc.connect(r"")
+    output_connection = pyodbc.connect(r'')
 
     zipfold = f"J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\{myDate1}"
     print(zipfold)
@@ -1531,11 +1531,6 @@ if (__name__== "__main__"):
             for i in range(11):
                 xmlFile = xmlFile.replace("  ", " ")
             xmlFile = xmlFile.replace("<td/>", "")
-            '''
-            xml_out_row_path = f"{xml_out_filepath}staging_payload_{sc}.xml"
-            with open(xml_out_row_path, 'w') as currentFile:
-                currentFile.write(xmlFile)
-            '''
 
             xml.sax.parseString(xmlFile, myPayloadHandler)
 
@@ -1621,7 +1616,7 @@ if (__name__== "__main__"):
     print("FINISHED Parsing")
 
     dbStart = time.time()
-    sandbox_conn = pyodbc.connect(r'DRIVER={ODBC Driver 17 for SQL Server};SERVER=Prodsqlsdc.tn.gov,2588;DATABASE=DC_CEDEP_Sandbox_SSI;Trusted_Connection=yes')
+    sandbox_conn = pyodbc.connect(r'')
    
     agg_results_query = "INSERT INTO eIcR_aggStepper\
                                         SELECT DISTINCT doc.OID,\
