@@ -761,7 +761,7 @@ class EICRHandler(xml.sax.ContentHandler):
             if self.output_cursor != None:
                 if self.document.docID is not None:
                     #print(f"Travel History: {self.document.patient.travelHistory}")
-                    self.output_cursor.execute("SELECT * from eICR_patients2 WHERE OID = ?\
+                    self.output_cursor.execute("SELECT * from eICR_patients WHERE OID = ?\
                                                 and mrn = ?\
                                                 and given_name = ?\
                                                 and family_name = ?\
@@ -803,7 +803,7 @@ class EICRHandler(xml.sax.ContentHandler):
                             self.document.docID = self.document.origDocID
                             #print(f"Setting missing docID to original DocID ({self.document.docID})")
                         if len(self.addresses)>0: # This feels like a bandaid solution I need to figure out what is the cause of this problem. Why am I not seeing an address at all?
-                            self.output_cursor.execute("INSERT INTO eICR_patients2\
+                            self.output_cursor.execute("INSERT INTO eICR_patients\
                                 (OID, mrn, given_name, family_name, pat_language, dob, marital_status, gender, race, ethnicity, telecom, deceased, pregnancy_status, travel_history, address, vcn, provider)\
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 (self.document.docID,
@@ -824,9 +824,9 @@ class EICRHandler(xml.sax.ContentHandler):
                                  self.document.vcn,
                                  self.provID))
                             self.output_cursor.commit()
-                            #print("Added to eICR_patients2")
+                            #print("Added to eICR_patients")
                         else:
-                            self.output_cursor.execute("INSERT INTO eICR_patients2\
+                            self.output_cursor.execute("INSERT INTO eICR_patients\
                                 (OID, mrn, given_name, family_name, pat_language, dob, marital_status, gender, race, ethnicity, telecom, deceased, pregnancy_status, travel_history, address, vcn, provider)\
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 (self.document.docID,
@@ -847,9 +847,9 @@ class EICRHandler(xml.sax.ContentHandler):
                                  self.document.vcn,
                                  self.provID))
                             self.output_cursor.commit()
-                            #print("Added to eICR_patients2")
+                            #print("Added to eICR_patients")
 
-                    self.output_cursor.execute("SELECT * from eICR_patients2 WHERE OID = ?\
+                    self.output_cursor.execute("SELECT * from eICR_patients WHERE OID = ?\
                                                 and mrn = ?\
                                                 and given_name = ?\
                                                 and family_name = ?\
@@ -884,7 +884,7 @@ class EICRHandler(xml.sax.ContentHandler):
                         #print(f"Patient ID: {self.patientUID}")
                     self.output_cursor.execute("SELECT OID, original_OID,\
                                                 versionControlNum,\
-                                                location FROM eICR_documents2\
+                                                location FROM eICR_documents\
                                                 WHERE OID = ? and original_OID = ?\
                                                 and versionControlNum = ? and location = ?",
                                                (self.document.docID, self.document.origDocID, self.document.vcn, self.location))
@@ -894,7 +894,7 @@ class EICRHandler(xml.sax.ContentHandler):
                         self.dupDoc = True
                     if len(rows)==0:
                         if self.document.eventTime != "-1" and self.date_added != "-1" and self.document.encounterTime != "-1": #All kept
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider,\
                                                     date_added, hpi, dischargeDispositionCode, healthCareFacility,\
                                                     serviceProvider, eE, eECode, eventDate, encounterDate, miscNotes)\
@@ -905,7 +905,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                                      self.spoID, self.document.eE, self.document.eECode.code, self.document.eventTime, self.document.encounterTime, self.document.miscNotes))
                             self.output_cursor.commit()
                         elif self.document.eventTime == "-1" and self.date_added != "-1" and self.document.encounterTime != "-1": #Keep date_added and encounterTime
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, date_added, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, encounterDate, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -913,7 +913,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                                      self.document.hpi, self.document.dischargeDisposition, self.hcfID, self.spoID, self.document.eE, self.document.eECode.code, self.document.encounterTime, self.document.miscNotes))
                             self.output_cursor.commit()
                         elif self.document.eventTime != "-1" and self.date_added == "-1" and self.document.encounterTime != "-1": #Keep eventTime and encounterTime
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, eventDate, encounterDate, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -922,7 +922,7 @@ class EICRHandler(xml.sax.ContentHandler):
                             
                             self.output_cursor.commit()
                         elif self.document.eventTime != "-1" and self.date_added != "-1" and self.document.encounterTime == "-1": #Keep eventTime and date_added
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, date_added, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, eventDate, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -930,7 +930,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                                      self.document.hpi, self.document.dischargeDisposition, self.hcfID, self.spoID, self.document.eE, self.document.eECode.code, self.document.eventTime, self.document.miscNotes))
                             self.output_cursor.commit()
                         elif self.document.eventTime == "-1" and self.date_added == "-1" and self.document.encounterTime != "-1": #Keep encounterTime
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, encounterDate, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -938,7 +938,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                                      self.document.hpi, self.document.dischargeDisposition, self.hcfID, self.spoID, self.document.eE, self.document.eECode.code, self.document.encounterTime, self.document.miscNotes))
                             self.output_cursor.commit()
                         elif self.document.eventTime == "-1" and self.date_added != "-1" and self.document.encounterTime == "-1": #Keep date_added
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, date_added, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -946,7 +946,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                                      self.document.hpi, self.document.dischargeDisposition, self.hcfID, self.spoID, self.document.eE, self.document.eECode.code, self.document.miscNotes))
                             self.output_cursor.commit()
                         elif self.document.eventTime != "-1" and self.date_added == "-1" and self.document.encounterTime == "-1": #Keep eventTime
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, eventDate, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -954,7 +954,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                                      self.document.hpi, self.document.dischargeDisposition, self.hcfID, self.spoID, self.document.eE, self.document.eECode.code, self.document.eventTime, self.document.miscNotes))
                             self.output_cursor.commit()
                         elif self.document.eventTime == "-1" and self.date_added == "-1" and self.document.encounterTime == "-1": #Keep Nothing
-                            self.output_cursor.execute("INSERT INTO eICR_documents2\
+                            self.output_cursor.execute("INSERT INTO eICR_documents\
                                                     (OID, original_OID, location, versionControlNum, patient, provider, hpi, dischargeDispositionCode, healthCareFacility, serviceProvider, eE, eECode, miscNotes)\
                                                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                                     (self.document.docID, self.document.origDocID, self.location,
@@ -1007,7 +1007,7 @@ class EICRHandler(xml.sax.ContentHandler):
 
         if self.currentData == 'serviceProviderOrganization':
             #print("Inserting Service Provider")
-            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations2 WHERE root = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.serviceProvider.orgID,
                                                                            self.document.serviceProvider.systemID,
@@ -1019,7 +1019,7 @@ class EICRHandler(xml.sax.ContentHandler):
                 self.spoID = row[0]
                 #print(f' Provider Org: {row[0]}')
             if len(rows)==0:
-                self.output_cursor.execute("INSERT INTO eICR_provider_organizations2\
+                self.output_cursor.execute("INSERT INTO eICR_provider_organizations\
                                             (root, extension, org_name, telecom, address) Values (?, ?, ?, ?, ?)",
                                            (self.document.serviceProvider.orgID,
                                             self.document.serviceProvider.systemID,
@@ -1028,7 +1028,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                             self.spoAddressUID))
                 self.output_cursor.commit
 
-            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations2 WHERE root = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.serviceProvider.orgID,
                                                                            self.document.serviceProvider.systemID,
@@ -1049,7 +1049,7 @@ class EICRHandler(xml.sax.ContentHandler):
         if self.currentData == 'healthCareFacility':
             #print("Inserting Health Care Facility")
             #print(f"HCF INFO:\nORG ID: {self.document.healthCareFacility.orgID}\nSystem ID: {self.document.healthCareFacility.systemID}\nOrg Name: {self.document.healthCareFacility.orgName}")
-            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations2 WHERE root = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.healthCareFacility.orgID,
                                                                            self.document.healthCareFacility.systemID,
@@ -1062,7 +1062,7 @@ class EICRHandler(xml.sax.ContentHandler):
                 #print(f' HCF: {row[0]}')
 
             if len(rows)==0:
-                self.output_cursor.execute("INSERT INTO eICR_provider_organizations2\
+                self.output_cursor.execute("INSERT INTO eICR_provider_organizations\
                                             (root, extension, org_name, telecom, address) Values (?, ?, ?, ?, ?)",
                                            (self.document.healthCareFacility.orgID,
                                             self.document.healthCareFacility.systemID,
@@ -1071,7 +1071,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                             self.hcfAddressUID))
                 self.output_cursor.commit
 
-            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations2 WHERE root = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.healthCareFacility.orgID,
                                                                            self.document.healthCareFacility.systemID,
@@ -1090,7 +1090,7 @@ class EICRHandler(xml.sax.ContentHandler):
             self.hcfAddressUID = '-1'
             
         if self.currentData == 'custodian':
-            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations2 WHERE root = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.provider.orgID,
                                                                            self.document.provider.systemID,
@@ -1103,7 +1103,7 @@ class EICRHandler(xml.sax.ContentHandler):
                 #print(f' Custodian: {row[0]}')
 
             if len(rows)==0:
-                self.output_cursor.execute("INSERT INTO eICR_provider_organizations2\
+                self.output_cursor.execute("INSERT INTO eICR_provider_organizations\
                                             (root, extension, org_name, telecom, address) Values (?, ?, ?, ?, ?)",
                                            (self.document.provider.orgID,
                                             self.document.provider.systemID,
@@ -1112,7 +1112,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                             self.oAddressUID))
                 self.output_cursor.commit
 
-            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations2 WHERE root = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.provider.orgID,
                                                                            self.document.provider.systemID,
@@ -1135,7 +1135,7 @@ class EICRHandler(xml.sax.ContentHandler):
 
         if self.currentData == 'addr':
             
-            self.output_cursor.execute("SELECT * FROM eICR_addresses2 WHERE street_address = ? and city = ? and addr_state = ?\
+            self.output_cursor.execute("SELECT * FROM eICR_addresses WHERE street_address = ? and city = ? and addr_state = ?\
                                         and postal_code = ? and addr_type = ? and county = ?\
                                         and country = ?", (self.document.address.street,
                                                            self.document.address.city,
@@ -1151,7 +1151,7 @@ class EICRHandler(xml.sax.ContentHandler):
 
                 
             if len(rows)==0:
-                self.output_cursor.execute("INSERT INTO eICR_addresses2\
+                self.output_cursor.execute("INSERT INTO eICR_addresses\
                                             (street_address, city, addr_state, postal_code, addr_type, county, country) VALUES (?, ?, ?, ?, ?, ?, ?)",
                                            (self.document.address.street,
                                             self.document.address.city,
@@ -1163,7 +1163,7 @@ class EICRHandler(xml.sax.ContentHandler):
                 self.output_cursor.commit
                 
             if self.document.address.addressType == 'r':
-                self.output_cursor.execute("SELECT * FROM eICR_addresses2 WHERE street_address = ? and city = ? and addr_state = ?\
+                self.output_cursor.execute("SELECT * FROM eICR_addresses WHERE street_address = ? and city = ? and addr_state = ?\
                                         and postal_code = ? and addr_type = ? and county = ?\
                                         and country = ?", (self.document.address.street,
                                                            self.document.address.city,
@@ -1180,7 +1180,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     #print(self.addresses)
                     
             if self.document.address.addressType == 'o' and self.parentTags[-2] == 'representedCustodianOrganization':
-                self.output_cursor.execute("SELECT * FROM eICR_addresses2 WHERE street_address = ? and city = ? and addr_state = ?\
+                self.output_cursor.execute("SELECT * FROM eICR_addresses WHERE street_address = ? and city = ? and addr_state = ?\
                                         and postal_code = ? and addr_type = ? and county = ?\
                                         and country = ?", (self.document.address.street,
                                                            self.document.address.city,
@@ -1194,7 +1194,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     self.oAddressUID = row[0]
 
             if self.document.address.addressType == 'o' and self.parentTags[-2] == 'healthCareFacility':
-                self.output_cursor.execute("SELECT * FROM eICR_addresses2 WHERE street_address = ? and city = ? and addr_state = ?\
+                self.output_cursor.execute("SELECT * FROM eICR_addresses WHERE street_address = ? and city = ? and addr_state = ?\
                                         and postal_code = ? and addr_type = ? and county = ?\
                                         and country = ?", (self.document.address.street,
                                                            self.document.address.city,
@@ -1208,7 +1208,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     self.hcfAddressUID = row[0]
 
             if self.document.address.addressType == 'o' and self.parentTags[-2] == 'serviceProviderOrganization':
-                self.output_cursor.execute("SELECT * FROM eICR_addresses2 WHERE street_address = ? and city = ? and addr_state = ?\
+                self.output_cursor.execute("SELECT * FROM eICR_addresses WHERE street_address = ? and city = ? and addr_state = ?\
                                         and postal_code = ? and addr_type = ? and county = ?\
                                         and country = ?", (self.document.address.street,
                                                            self.document.address.city,
@@ -1403,7 +1403,7 @@ class payloadParser(xml.sax.ContentHandler):
         if len(self.parentTags)>1:
             if self.currentData == 'observation' and self.triggerCodeRecorded == True:
                 #print(self.triggerCode.code, self.triggerCode.codeSystem, self.triggerCode.codeSystemName, self.triggerCode.displayName, self.OID)
-                self.output_cursor.execute("SELECT * FROM eICR_trigger_codes2 WHERE code = ?\
+                self.output_cursor.execute("SELECT * FROM eICR_trigger_codes WHERE code = ?\
                                             and code_system = ? and code_system_name = ?\
                                             and display_name = ? and OID = ?", (self.triggerCode.code,
                                                                    self.triggerCode.codeSystem,
@@ -1412,7 +1412,7 @@ class payloadParser(xml.sax.ContentHandler):
                                                                    self.OID))
                 rows = self.output_cursor.fetchall()
                 if len(rows) == 0 and self.triggerCode.code != None:
-                    self.output_cursor.execute("INSERT INTO eICR_trigger_codes2\
+                    self.output_cursor.execute("INSERT INTO eICR_trigger_codes\
                         (code, code_system, code_system_name, display_name, OID) VALUES (?, ?, ?, ?, ?)", (self.triggerCode.code,
                                                                            self.triggerCode.codeSystem,
                                                                            self.triggerCode.codeSystemName,
@@ -1442,11 +1442,11 @@ class payloadParser(xml.sax.ContentHandler):
 
 if (__name__== "__main__"):
     # Set up connections to staging and prod
-    staging_conn = pyodbc.connect(r"DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.11.25.16;DATABASE=nbs_msgoute;Trusted_Connection=yes")
-    prod_conn = pyodbc.connect(r"DRIVER={ODBC Driver 17 for SQL Server};SERVER=10.11.24.23;DATABASE=nbs_msgoute;Trusted_Connection=yes")
-    output_connection = pyodbc.connect(r'DRIVER={ODBC Driver 17 for SQL Server};SERVER=Prodsqlsdc.tn.gov,2588;DATABASE=DC_CEDEP_Sandbox_SSI;Trusted_Connection=yes')
+    staging_conn = pyodbc.connect(r"")
+    prod_conn = pyodbc.connect(r"")
+    output_connection = pyodbc.connect(r'')
     #These are the actual locations
-    zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16" 
+    zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16" ## Change this to point to the file folder where the zip files are for the day you are trying to run
     outputloc = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp\\temp2"
     #These are the test locations
     #zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp2" 
@@ -1466,7 +1466,7 @@ if (__name__== "__main__"):
                 and original_payload is not NULL and record_status_cd = 'SUCCESS'"
                 """                
 
-
+    #Use this query to select the timerange in the NBS databases that you want to look at
     query  = f"SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where add_time >= '6/16/2023' and add_time <= '6/17/2023' and original_payload is not NULL and record_status_cd = 'SUCCESS'"
     #query = "SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where original_payload like '%1.2.840.114350.1.13.478.2.7.5.737384.61.1970237346163.840539006%'"
     
@@ -1486,10 +1486,10 @@ if (__name__== "__main__"):
     
     zipStart = time.time()
     print("\nStarting Zipped Parsing\n")
-    uf.set_wdir("J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16\\")
+    uf.set_wdir("J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16\\") #Set this to the file folder wher ethe zip files are for the date you want to run the parser on
     cwd = os.getcwd()
 
-    processedFilesQuery = "SELECT original_OID FROM eICR_documents2 with (NOLOCK)"
+    processedFilesQuery = "SELECT original_OID FROM eICR_documents with (NOLOCK)"
     output_cursor = output_connection.cursor()
     output_cursor.execute(processedFilesQuery)
 
@@ -1651,15 +1651,7 @@ if (__name__== "__main__"):
         payload = row[1]
 
 
-        """
-        xml_out_row_path = f"{xml_out_filepath}prod_file_{pc}.xml"
-        with open(xml_out_row_path, 'w') as currentFile:
-            currentFile.write(xmlFile)
-        """
-        """
-        if "BMH1246952" in xmlFile:
-            print(xml_out_row_path)
-        """
+
         if original_payload == None:
             print(f"PROD: Original Payload None.")
         else:
@@ -1729,7 +1721,7 @@ if (__name__== "__main__"):
     print("FINISHED Parsing")
 
     dbStart = time.time()
-    sandbox_conn = pyodbc.connect(r'DRIVER={ODBC Driver 17 for SQL Server};SERVER=Prodsqlsdc.tn.gov,2588;DATABASE=DC_CEDEP_Sandbox_SSI;Trusted_Connection=yes')
+    sandbox_conn = pyodbc.connect(r'')
     query = "SELECT DISTINCT doc.OID,\
             doc.original_OID,\
             doc.versionControlNum,\
@@ -1767,19 +1759,19 @@ if (__name__== "__main__"):
             doc.eECode as eEncounter_code,\
             ee.display_name as eEncounter_display,\
             doc.eventDate,\
-            hcf.extension as health_care_facility2\
+            hcf.extension as health_care_facility\
             FROM \
-                    eICR_documents2 AS doc INNER JOIN eICR_patients2 AS pat ON (doc.patient = pat.UID) or (doc.oid = pat.oid)\
-                    LEFT JOIN eICR_addresses2 AS addr ON pat.address = addr.uid \
+                    eICR_documents AS doc INNER JOIN eICR_patients AS pat ON (doc.patient = pat.UID) or (doc.oid = pat.oid)\
+                    LEFT JOIN eICR_addresses AS addr ON pat.address = addr.uid \
                     LEFT JOIN eICR_gender_codes AS gc ON pat.gender = gc.code \
                     LEFT JOIN eICR_race_ethnicity_codes AS rc ON pat.race = rc.code \
                     LEFT JOIN eICR_race_ethnicity_codes AS ec ON pat.ethnicity = ec.code \
-                    LEFT JOIN eICR_provider_organizations2 AS prov ON pat.provider = prov.uid \
-                    LEFT JOIN eICR_provider_organizations2 AS hcf ON doc.healthCareFacility = hcf.uid \
-                    LEFT JOIN eICR_provider_organizations2 AS spo ON doc.serviceProvider = spo.uid \
-                    LEFT JOIN eICR_addresses2 AS prov_addr ON prov.address = prov_addr.uid \
+                    LEFT JOIN eICR_provider_organizations AS prov ON pat.provider = prov.uid \
+                    LEFT JOIN eICR_provider_organizations AS hcf ON doc.healthCareFacility = hcf.uid \
+                    LEFT JOIN eICR_provider_organizations AS spo ON doc.serviceProvider = spo.uid \
+                    LEFT JOIN eICR_addresses AS prov_addr ON prov.address = prov_addr.uid \
                     LEFT JOIN eICR_marriage_codes AS mc ON pat.marital_status = mc.code \
-                    LEFT JOIN eICR_trigger_codes2 AS tc ON doc.OID=tc.OID\
+                    LEFT JOIN eICR_trigger_codes AS tc ON doc.OID=tc.OID\
                     LEFT JOIN eICR_encompassing_encounter_codes as ee ON doc.eECode=ee.code\
             WHERE (doc.date_added >= dateadd(day,-{daysToSearch}-2,GETDATE()) or doc.eventDate >= dateadd(day,-{daysToSearch}-2,GETDATE()))"
 
@@ -1825,7 +1817,7 @@ if (__name__== "__main__"):
                                         doc.eECode as eEncounter_code,\
                                         ee.display_name as eEncounter_display,\
                                         doc.eventDate,\
-                                        hcf.extension as health_care_facility2,\
+                                        hcf.extension as health_care_facility,\
                                         tc.code as triggerCode,\
                                         tc.display_name as triggerName,\
                                         doc.encounterDate,\
@@ -1833,18 +1825,18 @@ if (__name__== "__main__"):
                                         tc2.code as triggerCode2,\
                                         prov.address as provider_address_id\
                                         FROM \
-                                                eICR_documents2 AS doc inner JOIN eICR_patients2 AS pat ON (doc.patient = pat.UID) or (doc.oid = pat.oid)\
-                                                LEFT JOIN eICR_addresses2 AS addr ON pat.address = addr.uid \
+                                                eICR_documents AS doc inner JOIN eICR_patients AS pat ON (doc.patient = pat.UID) or (doc.oid = pat.oid)\
+                                                LEFT JOIN eICR_addresses AS addr ON pat.address = addr.uid \
                                                 LEFT JOIN eICR_gender_codes AS gc ON pat.gender = gc.code \
                                                 LEFT JOIN eICR_race_ethnicity_codes AS rc ON pat.race = rc.code \
                                                 LEFT JOIN eICR_race_ethnicity_codes AS ec ON pat.ethnicity = ec.code \
-                                                LEFT JOIN eICR_provider_organizations2 AS prov ON pat.provider = prov.uid \
-                                                LEFT JOIN eICR_provider_organizations2 AS hcf ON doc.healthCareFacility = hcf.uid \
-                                                LEFT JOIN eICR_provider_organizations2 AS spo ON doc.serviceProvider = spo.uid \
-                                                LEFT JOIN eICR_addresses2 AS prov_addr ON prov.address = prov_addr.uid \
+                                                LEFT JOIN eICR_provider_organizations AS prov ON pat.provider = prov.uid \
+                                                LEFT JOIN eICR_provider_organizations AS hcf ON doc.healthCareFacility = hcf.uid \
+                                                LEFT JOIN eICR_provider_organizations AS spo ON doc.serviceProvider = spo.uid \
+                                                LEFT JOIN eICR_addresses AS prov_addr ON prov.address = prov_addr.uid \
                                                 LEFT JOIN eICR_marriage_codes AS mc ON pat.marital_status = mc.code \
-                                                LEFT JOIN eICR_trigger_codes2 AS tc ON doc.OID=tc.OID\
-                                                LEFT JOIN eICR_trigger_codes2 as tc2 ON doc.original_OID = tc2.OID\
+                                                LEFT JOIN eICR_trigger_codes AS tc ON doc.OID=tc.OID\
+                                                LEFT JOIN eICR_trigger_codes as tc2 ON doc.original_OID = tc2.OID\
                                                 LEFT JOIN eICR_encompassing_encounter_codes as ee ON doc.eECode=ee.code\
                                         WHERE Not EXISTS (\
                                         SELECT 1\
@@ -1854,7 +1846,7 @@ if (__name__== "__main__"):
                                         and fr.versionControlNum = doc.versionControlNum\
                                         )"
 
-    final_results_query = "INSERT INTO eIcR_FinalResults2\
+    final_results_query = "INSERT INTO eIcR_FinalResults\
                                         SELECT DISTINCT OID,\
                                         original_OID,\
                                         versionControlNum,\
@@ -1892,14 +1884,14 @@ if (__name__== "__main__"):
                                         eEncounter_code,\
                                         eEncounter_display,\
                                         eventDate,\
-                                        health_care_facility2,\
+                                        health_care_facility,\
                                         encounterDate,\
                                         CASE\
-                                            WHEN triggerName is NULL then triggerName2\
+                                            WHEN triggerName is NULL then triggerName\
                                             else triggerName\
                                         END as triggerNameComb,\
                                         CASE\
-                                            WHEN triggerCode is Null then triggerCode2\
+                                            WHEN triggerCode is Null then triggerCode\
                                             ELSE triggerCode\
                                             END as triggerCodeComb,\
                                         provider_address_id\
@@ -1907,7 +1899,7 @@ if (__name__== "__main__"):
                                             eICR_aggStepper"
     
 
-    missingDataQuery = "INSERT INTO eICR_Missing_Data_Summary2\
+    missingDataQuery = "INSERT INTO eICR_Missing_Data_Summary\
                         SELECT DISTINCT\
                             CASE\
                                 WHEN OID = '-1' THEN 'Missing'\
@@ -1982,12 +1974,12 @@ if (__name__== "__main__"):
                             eEncounter_code,\
                             eEncounter_display,\
                             eventDate,\
-                            health_care_facility2,\
+                            health_care_facility,\
                             encounterDate,\
                             triggerNameComb,\
                             triggerCodeComb,\
                             provider_address_id\
-                        FROM eICR_FinalResults2 WITH (NOLOCK)"
+                        FROM eICR_FinalResults WITH (NOLOCK)"
 
 
  
@@ -1999,9 +1991,9 @@ if (__name__== "__main__"):
     #df.to_csv("missingStats.csv", index=False)
     sandboxCursor.execute(agg_results_query)
     sandboxCursor.commit()
-    sandboxCursor.execute("DELETE FROM eICR_FinalResults2")
+    sandboxCursor.execute("DELETE FROM eICR_FinalResults")
     sandboxCursor.commit()
-    sandboxCursor.execute("DELETE FROM eICR_Missing_Data_Summary2")
+    sandboxCursor.execute("DELETE FROM eICR_Missing_Data_Summary")
     sandboxCursor.commit()
     sandboxCursor.execute(final_results_query)
     sandboxCursor.commit()
