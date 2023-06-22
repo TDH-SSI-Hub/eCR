@@ -164,7 +164,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[eICR_FinalResults2](
+CREATE TABLE [dbo].[eICR_FinalResults](
 	[OID] [varchar](255) NULL,
 	[original_OID] [varchar](255) NULL,
 	[versionControlNum] [int] NULL,
@@ -301,7 +301,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[eICR_Missing_Data_Summary2](
+CREATE TABLE [dbo].[eICR_Missing_Data_Summary](
 	[OID] [varchar](7) NOT NULL,
 	[original_OID] [varchar](7) NOT NULL,
 	[vcn] [int] NULL,
@@ -352,7 +352,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[eICR_patients2](
+CREATE TABLE [dbo].[eICR_patients](
 	[UID] [int] IDENTITY(1,1) NOT NULL,
 	[OID] [varchar](255) NULL,
 	[mrn] [varchar](255) NULL,
@@ -383,7 +383,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[eICR_provider_organizations2](
+CREATE TABLE [dbo].[eICR_provider_organizations](
 	[uid] [int] IDENTITY(1,1) NOT NULL,
 	[root] [varchar](255) NULL,
 	[extension] [varchar](100) NULL,
@@ -3320,7 +3320,7 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[eICR_trigger_codes2](
+CREATE TABLE [dbo].[eICR_trigger_codes](
 	[uid] [int] IDENTITY(1,1) NOT NULL,
 	[code] [varchar](25) NULL,
 	[code_system] [varchar](50) NULL,
