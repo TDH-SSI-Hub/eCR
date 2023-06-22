@@ -350,8 +350,7 @@ class EICRHandler(xml.sax.ContentHandler):
         self.currentData = tag
         self.parentTags.append(tag)
         self.cern = False
-        #print(self.parentTags)
-        #print(self.currentData)
+
 
         if self.document.eventTime == '-1' and self.currentData == 'effectiveTime' and self.parentTags[-2] == 'ClinicalDocument' and 'value' in attributes.getNames():
             fullTime = attributes['value']
@@ -374,7 +373,7 @@ class EICRHandler(xml.sax.ContentHandler):
         
         if len(self.parentTags)>1:
             # Find the id tag within the representedCustodianOrganization Tag
-            #print(self.currentData)
+
             if self.parentTags[-2] == 'representedCustodianOrganization' and self.currentData == 'id':
                 if 'root' in attributes.getNames() and 'extension' in attributes.getNames():
                     self.document.provider.systemID, self.document.provider.orgID = attributes['extension'], attributes['root']
@@ -382,37 +381,37 @@ class EICRHandler(xml.sax.ContentHandler):
                     #print(f"Missing Extension: ID = {self.document.docID}")
                     self.document.provider.systemID, self.document.provider.orgID = "-1", attributes['root']
                 elif 'root' not in attributes.getNames() and 'extension' in attributes.getNames():
-                    #print(f"Missing Root: ID = {self.document.docID}")
+
                     self.document.provider.systemID, self.document.provider.orgID = "-1", attributes['extension']
                 else:
-                    #print(f"Missing Root & Extension: ID = {self.document.docID}")
+
                     self.document.provider.systemID, self.document.provider.orgID = "-1", "-1"
 
             if self.parentTags[-2] == 'healthCareFacility' and self.currentData == 'id':
                 if 'root' in attributes.getNames() and 'extension' in attributes.getNames():
                     self.document.healthCareFacility.systemID, self.document.healthCareFacility.orgID = attributes['extension'], attributes['root']
-                    #print(f"Extension = {self.document.healthCareFacility.systemID}, ID = {self.document.healthCareFacility.orgID}")
+
                 elif 'root' in attributes.getNames() and 'extension' not in attributes.getNames():
-                    #print(f"Missing Extension: ID = {self.document.docID}")
+
                     self.document.healthCareFacility.systemID, self.document.healthCareFacility.orgID = "-1", attributes['root']
                 elif 'root' not in attributes.getNames() and 'extension' in attributes.getNames():
-                    #print(f"Missing Root: ID = {self.document.docID}")
+
                     self.document.healthCareFacility.systemID, self.document.healthCareFacility.orgID = "-1", attributes['extension']
                 else:
-                    #print(f"Missing Root & Extension: ID = {self.document.docID}")
+
                     self.document.healthCareFacility.systemID, self.document.healthCareFacility.orgID = "-1", "-1"
 
             if self.parentTags[-2] == 'serviceProviderOrganization' and self.currentData == 'id':
                 if 'root' in attributes.getNames() and 'extension' in attributes.getNames():
                     self.document.serviceProvider.systemID, self.document.serviceProvider.orgID = attributes['extension'], attributes['root']
                 elif 'root' in attributes.getNames() and 'extension' not in attributes.getNames():
-                    #print(f"Missing Extension: ID = {self.document.docID}")
+
                     self.document.serviceProvider.systemID, self.document.serviceProvider.orgID = "-1", attributes['root']
                 elif 'root' not in attributes.getNames() and 'extension' in attributes.getNames():
-                    #print(f"Missing Root: ID = {self.document.docID}")
+
                     self.document.serviceProvider.systemID, self.document.serviceProvider.orgID = "-1", attributes['extension']
                 else:
-                    #print(f"Missing Root & Extension: ID = {self.document.docID}")
+
                     self.document.serviceProvider.systemID, self.document.serviceProvider.orgID = "-1", "-1"
 
             if self.currentData == 'telecom' and self.parentTags[-2] == 'representedCustodianOrganization':
@@ -431,28 +430,12 @@ class EICRHandler(xml.sax.ContentHandler):
                 else:
                     self.document.patient.mrn = attributes["extension"]
 
-                ''' This is what I was using before, but I think that it is limiting to only EPIC and such
-                #print(f"MRN ROOT: {attributes['root']}")
-                if (attributes["root"][0:20] == "1.2.840.114350.1.13." and attributes["root"][23:]==".2.7.3.688884.100"):
-                    #print(f"MRN Found")
-                    if attributes["extension"] == None:
-                        self.document.patient.mrn = "-1"
-                    else:
-                        self.document.patient.mrn = attributes["extension"]
-                elif self.document.patient.mrn == "-1":
-                    #print("MRN Not Found")
-                    self.document.patient.mrn = "-1"
-                    #print(f"MRN: {self.document.patient.mrn}")
-                '''
             if self.parentTags[-2] == 'ClinicalDocument' and self.currentData == "versionNumber":
                 if 'value' in attributes.getNames():
                     self.document.vcn = attributes['value']
                 else:
                     self.document.vcn = "-1"
-                    #print(self.document.docID)
-                #print(f"Version: {self.document.vcn}")
 
-            # Finds if they were pregnant or not.
             """
             This section probably needs some more work to make sure that we are not missing non-pregnant codes or other possible pregnancy codes
 
@@ -471,8 +454,7 @@ class EICRHandler(xml.sax.ContentHandler):
             if self.parentTags[-2] == 'act' and self.currentData == 'code' and 'code' in attributes.getNames():
                 if attributes['code'] == '4208001':
                     self.document.patient.travelHistory == 'travel'
-                    #print("Travel Info found")
-                    #print(self.document.patient.travelHistory)
+
                 else:
                     self.document.patient.travelHistory == 'no travel'
 
@@ -483,26 +465,26 @@ class EICRHandler(xml.sax.ContentHandler):
                 
                     
             if self.cern == False:
-                #print(self.cern)
+
                 if self.parentTags[-2] == 'ClinicalDocument' and self.currentData == 'id' and 'assigningAuthorityName' in attributes.getNames():
                     self.document.origDocID = attributes['root']
-                    #print(f"Document ID: {self.document.docID}")
+
                 elif self.parentTags[-2] == 'ClinicalDocument' and self.currentData == 'id' and 'assigningAuthorityName' not in attributes.getNames():
                     if self.document.origDocID == "-1":
                         self.document.origDocID = attributes['root']
-                        #print(f"Original Document ID: {self.document.origDocID}")
+
 
                     else:
                         self.document.docID = attributes['root']
-                        #print(f"Document ID: {self.document.docID}")                        
+                    
 
 
                     
             elif self.cern == True:
-                #print(self.cern)
+
                 if self.parentTags[-2] == 'ClinicalDocument' and self.currentData == 'id' and 'a' not in attributes['root'] and 'b' not in attributes['root'] and 'c' not in attributes['root'] and 'd' not in attributes['root'] and 'e' not in attributes['root'] and 'f' not in attributes['root']:
                     self.document.docID = attributes['root']
-                    #print(f"Document ID: {self.document.docID}")
+
                 else:
                     self.document.origDocID = attributes['root']
 
@@ -545,7 +527,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     self.document.patient.maritalStatus.displayName) = ("-1", None, None, None)
 
             if self.parentTags[-2] == "encompassingEncounter" and self.currentData == "code" and self.document.eECode.code == "-1":
-                #print("Encompassing Encounter Code Found")
+
                 if 'code' in attributes.getNames() and 'codeSystem' in attributes.getNames() and 'codeSystemName' in attributes.getNames() and 'displayName' in attributes.getNames():
                     (self.document.eECode.code,
                      self.document.eECode.codeSystem,
@@ -576,10 +558,7 @@ class EICRHandler(xml.sax.ContentHandler):
                      self.document.eECode.codeSystem,
                      self.document.eECode.codeSystemName,
                      self.document.eECode.displayName) = (None, None, None, None)
-                #print(self.document.eECode.code,
-                     #self.document.eECode.codeSystem,
-                     #self.document.eECode.codeSystemName,
-                     #self.document.eECode.displayName)
+
                 
             # This grabs gender
             if self.currentData == 'administrativeGenderCode':
@@ -663,8 +642,7 @@ class EICRHandler(xml.sax.ContentHandler):
                     self.document.patient.deceased = attributes['value']
 
             if self.parentTags[-2] == 'addr' and self.parentTags[-3] == 'patientRole':
-                #print(self.currentData)
-                #print(attributes.getNames())
+
                 if self.currentData == "streetAddressLine" and 'nullFlavor' in attributes.getNames():
                     self.document.address.street = '-2'
                 elif self.currentData == "city" and 'nullFlavor' in attributes.getNames():
@@ -678,39 +656,32 @@ class EICRHandler(xml.sax.ContentHandler):
                 elif self.currentData == 'country' and 'nullFlavor' in attributes.getNames():
                     self.document.address.country = '-2'
 
-            #if len(self.parentTags)>3 and self.parentTags[-3] == 'component' and self.currentData == 'code' and 'code' in attributes.getNames() :
             if self.currentData == 'code' and 'code' in attributes.getNames() : #Trying this to see if it fixes the HPI missing thing
                 if attributes['code'] == '10164-2':
-                    #print('HPI Found')
+
                     self.document.hpi = 'Present'
-                    #print(f'HPI set to: {self.document.hpi}')
+
                     self.HPISection = True
 
             if len(self.parentTags)>4 and self.parentTags[-4] == 'component' and self.currentData == 'content' and 'ID' in attributes.getNames():
                 if self.HPISection:
                     if self.miscNotes:
-                        #print(f"Checking for nof in {self.document.docID}: {attributes['ID'][0:3]}")
+
                         if attributes['ID'][0:3] == 'nof' and self.document.hpi != 'Present':
-                            #print("HPI Missing")
+
                             self.document.miscNotes = 'Missing'
 
 
             if len(self.parentTags)>6 and self.parentTags[-6] == 'component' and self.currentData == 'content' and 'ID' in attributes.getNames():
                 if self.HPISection:
                     if self.miscNotes:
-                        #print(f"Checking for note in {self.document.docID}: {attributes['ID'][0:4]}")
+
                         if attributes['ID'][0:4] == 'Note':
-                            #print("HPI Present")
+
                             self.document.miscNotes = 'Present'
 
             if self.currentData == 'dischargeDispositionCode' and 'code' in attributes.getNames():
                 self.document.dischargeDisposition = attributes['code']
-                #print(f"Discharge Disposition: {self.document.dischargeDisposition}")
-
-            #if self.currentData == 'name' and self.parentTags[-2]== 'patient' and 'nullFalvor' in attributes.getNames():
-            #    self.document.patient.firstNames[0] = '-1'
-            #    self.document.patient.lastNames[0] = '-1'
-                        
                     
 
     def endElement(self, tag):
@@ -733,8 +704,6 @@ class EICRHandler(xml.sax.ContentHandler):
                 self.document.patient.primaryPhoneNumber = "-1"
 
         if self.currentData == 'encompassingEncounter':
-            #print("encompassing Encounter")
-            #print(self.document.eECode.code, self.document.eECode.codeSystem, self.document.eECode.codeSystemName, self.document.eECode.displayName)
 
             self.output_cursor.execute("SELECT * \
                                         FROM eICR_encompassing_encounter_codes\
@@ -753,14 +722,10 @@ class EICRHandler(xml.sax.ContentHandler):
 
                     
         if self.currentData == 'ClinicalDocument':
-            #print(self.document.docID)
-            #print(f"Document Version Number: {self.document.vcn}")
-            #print(self.document.__dict__)
-            #print(f"Pregnancy Status: {self.document.patient.pregnancyStatus}")
-            #print(f'HPI value at end: {self.document.hpi}')
+
             if self.output_cursor != None:
                 if self.document.docID is not None:
-                    #print(f"Travel History: {self.document.patient.travelHistory}")
+
                     self.output_cursor.execute("SELECT * from eICR_patients WHERE OID = ?\
                                                 and mrn = ?\
                                                 and given_name = ?\
@@ -792,16 +757,13 @@ class EICRHandler(xml.sax.ContentHandler):
                     rows = self.output_cursor.fetchall()
                     for row in rows:
                         self.patientUID = row[0]
-                        #print(f"Patient Exists: {self.patientExists}")
-                        #print(row)
+
                     if len(rows)==0:
-                        #print(f"Document ID: {self.document.docID}")
-                        #print(f"Addresses: {self.addresses}")
-                        #print(f"Street: {self.document.address.street}")
+
                         if self.document.docID == "-1":
                             
                             self.document.docID = self.document.origDocID
-                            #print(f"Setting missing docID to original DocID ({self.document.docID})")
+
                         if len(self.addresses)>0: # This feels like a bandaid solution I need to figure out what is the cause of this problem. Why am I not seeing an address at all?
                             self.output_cursor.execute("INSERT INTO eICR_patients\
                                 (OID, mrn, given_name, family_name, pat_language, dob, marital_status, gender, race, ethnicity, telecom, deceased, pregnancy_status, travel_history, address, vcn, provider)\
@@ -824,7 +786,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                  self.document.vcn,
                                  self.provID))
                             self.output_cursor.commit()
-                            #print("Added to eICR_patients")
+
                         else:
                             self.output_cursor.execute("INSERT INTO eICR_patients\
                                 (OID, mrn, given_name, family_name, pat_language, dob, marital_status, gender, race, ethnicity, telecom, deceased, pregnancy_status, travel_history, address, vcn, provider)\
@@ -847,7 +809,7 @@ class EICRHandler(xml.sax.ContentHandler):
                                  self.document.vcn,
                                  self.provID))
                             self.output_cursor.commit()
-                            #print("Added to eICR_patients")
+
 
                     self.output_cursor.execute("SELECT * from eICR_patients WHERE OID = ?\
                                                 and mrn = ?\
@@ -878,10 +840,10 @@ class EICRHandler(xml.sax.ContentHandler):
                                                                  self.document.patient.travelHistory))
                     self.patientExists = False
                     rows = self.output_cursor.fetchall()
-                    #print(f"Rows Found: {len(rows)}")
+
                     for row in rows:
                         self.patientUID = row[0]
-                        #print(f"Patient ID: {self.patientUID}")
+
                     self.output_cursor.execute("SELECT OID, original_OID,\
                                                 versionControlNum,\
                                                 location FROM eICR_documents\
@@ -967,8 +929,7 @@ class EICRHandler(xml.sax.ContentHandler):
 ##This is where the problem is these documents don't have docIDs because they are only in zipped files and don't have a time wehre patient information is written to the file                        
                 elif self.document.docID is None:
                     print("Missing doc ID")
-            #print(self.document.hpi)
-            #print(f'Document ID: {self.document.docID}')
+
             self.document.patient.firstNames = []
             self.document.patient.lastNames = []
             self.document.patient.phoneNumbers = []
@@ -1006,7 +967,7 @@ class EICRHandler(xml.sax.ContentHandler):
             #print('\n')
 
         if self.currentData == 'serviceProviderOrganization':
-            #print("Inserting Service Provider")
+
             self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.serviceProvider.orgID,
@@ -1017,7 +978,7 @@ class EICRHandler(xml.sax.ContentHandler):
             for row in rows:
                 self.orgExists = True
                 self.spoID = row[0]
-                #print(f' Provider Org: {row[0]}')
+
             if len(rows)==0:
                 self.output_cursor.execute("INSERT INTO eICR_provider_organizations\
                                             (root, extension, org_name, telecom, address) Values (?, ?, ?, ?, ?)",
@@ -1038,7 +999,7 @@ class EICRHandler(xml.sax.ContentHandler):
             for row in rows:
                 self.orgExists = True
                 self.spoID = row[0]
-                #print(f' Provider Org: {row[0]}')
+
 
             self.document.serviceProvider.orgID = '-1'
             self.document.serviceProvider.systemID = '-1'
@@ -1047,8 +1008,6 @@ class EICRHandler(xml.sax.ContentHandler):
             self.spoAddressUID = '-1'
 
         if self.currentData == 'healthCareFacility':
-            #print("Inserting Health Care Facility")
-            #print(f"HCF INFO:\nORG ID: {self.document.healthCareFacility.orgID}\nSystem ID: {self.document.healthCareFacility.systemID}\nOrg Name: {self.document.healthCareFacility.orgName}")
             self.output_cursor.execute("SELECT * FROM eICR_provider_organizations WHERE root = ?\
                                         and extension = ? and org_name = ?\
                                         and telecom = ?", (self.document.healthCareFacility.orgID,
@@ -1059,7 +1018,7 @@ class EICRHandler(xml.sax.ContentHandler):
             for row in rows:
                 self.orgExists = True
                 self.hcfID = row[0]
-                #print(f' HCF: {row[0]}')
+
 
             if len(rows)==0:
                 self.output_cursor.execute("INSERT INTO eICR_provider_organizations\
@@ -1081,7 +1040,7 @@ class EICRHandler(xml.sax.ContentHandler):
             for row in rows:
                 self.orgExists = True
                 self.hcfID = row[0]
-                #print(f' HCF: {row[0]}')
+
 
             self.document.healthCareFacility.orgID = '-1'
             self.document.healthCareFacility.systemID = '-1'
@@ -1100,7 +1059,7 @@ class EICRHandler(xml.sax.ContentHandler):
             for row in rows:
                 self.orgExists = True
                 self.provID = row[0]
-                #print(f' Custodian: {row[0]}')
+
 
             if len(rows)==0:
                 self.output_cursor.execute("INSERT INTO eICR_provider_organizations\
@@ -1122,7 +1081,7 @@ class EICRHandler(xml.sax.ContentHandler):
             for row in rows:
                 self.orgExists = True
                 self.provID = row[0]
-                #print(f' Custodian: {row[0]}')
+
 
             self.document.provider.orgID = '-1'
             self.document.provider.systemID = '-1'
@@ -1176,8 +1135,7 @@ class EICRHandler(xml.sax.ContentHandler):
                 for row in rows:
                     self.pAddressUID = row[0]
                     self.addresses.append(self.pAddressUID)
-                    #print(len(self.addresses))
-                    #print(self.addresses)
+
                     
             if self.document.address.addressType == 'o' and self.parentTags[-2] == 'representedCustodianOrganization':
                 self.output_cursor.execute("SELECT * FROM eICR_addresses WHERE street_address = ? and city = ? and addr_state = ?\
@@ -1236,20 +1194,19 @@ class EICRHandler(xml.sax.ContentHandler):
         self.parentTags.pop()
 
     def characters(self, content):
-        #print(self.document.address.street)
+
         # Add given and family names to thier respective lists
         if len(self.parentTags)>3 and self.parentTags[-3] == "patient":
             if self.currentData=="given":
                 self.document.patient.firstNames.append(content)
-                #print(f"Given Name {content}")
-                #print(f"Count of given Names: {len(self.patient.name.allGivenNames)}")
+
             if self.currentData=="family":
                 self.document.patient.lastNames.append(content)
-                #print(content)
+
         if len(self.parentTags)>3 and self.parentTags[-2] == 'addr':
             if self.parentTags[-3] == 'patientRole':
                 self.document.address.addressType = 'r'
-                #print(f"Street: {self.document.address.street}")
+
                 if self.currentData == 'streetAddressLine' and self.document.address.street != "-2":
                     if self.document.address.street == None or self.document.address.street == "-1":
                         self.document.address.street = content
@@ -1315,46 +1272,24 @@ class EICRHandler(xml.sax.ContentHandler):
 
 
         if len(self.parentTags)>7 and self.parentTags[-1] == 'content' and self.parentTags[-8] == 'component':
-            #print(f"Looking for Pregnancy status in {self.document.docID}")
+
 
             if len(content) > 0:
                 for code in snowmed_preg_codes:
                     if code in content:
                         self.document.patient.pregnancyStatus = 'pregnant'
-                        #print("Pregnancy Found")
+
 
                 for code in loinc_preg_codes:
                     if code in content:
                         self.document.patient.pregnancyStatus = 'pregnant'
-                        #print("Pregnancy Found")
+
 
 
                 for code in ICD_preg_codes:
                     if code in content:
                         self.document.patient.pregnancyStatus = 'pregnant'
-                        #print("Pregnancy Found")
 
-                
-            #print(f"Pregnancy Status After Looking: {self.document.patient.pregnancyStatus}")
-
-'''
-        if len(self.parentTags)>4:
-            if self.parentTags[-4] == 'component':
-                #print('Component found')
-                if self.parentTags[-1] == 'content':
-                    #print('Content found')
-                    if self.HPISection:
-                        #print("self.miscNotes = True")
-                        if self.miscNotes:
-                            #print("self.HPISection = True")
-                            if content == 'Not on file':
-                                print("HPI Missing")
-                                self.document.hpi = 'missing'
-                            elif content != 'Not on file':
-                                print("HPI Present")
-                                self.document.hpi = 'present'
-                            
-'''
 
 class payloadParser(xml.sax.ContentHandler):
     def __init__(self, output_cursor = None):
@@ -1369,32 +1304,29 @@ class payloadParser(xml.sax.ContentHandler):
         self.currentData = tag
         self.parentTags.append(tag)
 
-        #if self.parentTags[-1] == 'ClinicalDocument':
-                #print("\n\nNew Document")
-
         if len(self.parentTags)>9:
             if self.parentTags[-2] == 'observation' and (self.parentTags[-10] == 'ClinicalDocument' or self.parentTags[-8] == 'ClinicalDocument' or self.parentTags[-9] == 'ClinicalDocument'):
-                #print(self.OID)
+
                 if self.currentData == 'code' and 'code' in attributes.getNames() and (attributes['code']=='INV169' or attributes['code']=='64572001' or attributes['code']=='INV168'):
                     self.triggerCodeLocation = True
                     self.myCode = attributes['code']
-                    #print(f"Current Code: {self.myCode}")
+
                 if self.currentData == 'value' and self.triggerCodeLocation == True and 'code' in attributes.getNames() and 'codeSystem' in attributes.getNames() and 'codeSystemName' in attributes.getNames() and 'displayName' in attributes.getNames():
-                    #print('Trigger Code Found')
+
                     self.triggerCode.code = attributes['code']
                     self.triggerCode.codeSystem = attributes['codeSystem']
                     self.triggerCode.codeSystemName = attributes['codeSystemName']
                     self.triggerCode.displayName = attributes['displayName']
-                    #print(self.triggerCode.code,self.triggerCode.codeSystem, self.triggerCode.codeSystemName, self.triggerCode.displayName)
+
                     self.triggerCodeLocation = False
                     self.triggerCodeRecorded = True
         if len(self.parentTags)>1:
             if self.parentTags[-2] == 'ClinicalDocument' and self.currentData == 'id' and 'extension' in attributes.getNames():
                 self.OID = attributes['extension']
-                #print(f"OID EXTENSION: {self.OID}")
+
             elif self.parentTags[-2] == 'externalDocument' and self.currentData =='id' and 'root' in attributes.getNames():
                 self.OID = attributes['root']
-                #print(f"OID ROOT: {self.OID}")
+
             
 
     def endElement(self,tag):
@@ -1402,7 +1334,7 @@ class payloadParser(xml.sax.ContentHandler):
 
         if len(self.parentTags)>1:
             if self.currentData == 'observation' and self.triggerCodeRecorded == True:
-                #print(self.triggerCode.code, self.triggerCode.codeSystem, self.triggerCode.codeSystemName, self.triggerCode.displayName, self.OID)
+
                 self.output_cursor.execute("SELECT * FROM eICR_trigger_codes WHERE code = ?\
                                             and code_system = ? and code_system_name = ?\
                                             and display_name = ? and OID = ?", (self.triggerCode.code,
@@ -1418,7 +1350,7 @@ class payloadParser(xml.sax.ContentHandler):
                                                                            self.triggerCode.codeSystemName,
                                                                            self.triggerCode.displayName,
                                                                             self.OID))
-                    #print("Trigger observation Recorded")
+
                     
                 self.triggerCodeRecorded = False
                     
@@ -1448,23 +1380,8 @@ if (__name__== "__main__"):
     #These are the actual locations
     zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\2023-06-16" ## Change this to point to the file folder where the zip files are for the day you are trying to run
     outputloc = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp\\temp2"
-    #These are the test locations
-    #zipfold = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp2" 
-    #outputloc = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp2\\temp"
     eICRName = "CDA_eICR.xml"
     RRName = "CDA_RR.xml"
-
-    # Query to grab xml
-    ###This is the query we will usually use
-    ##Remove top 1 section when testing is done.
-    #query = f"SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where add_time >= dateadd(day,-{daysToSearch},GETDATE()) and original_payload is not NULL" # Make sure to remove the top 50 portion before using this in production!!!!!!!
-
-    ##This query is for back filling data
-    """
-    query = f"SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK)\
-                where (add_time >= dateadd(day,-{daysToSearch},GETDATE()))\
-                and original_payload is not NULL and record_status_cd = 'SUCCESS'"
-                """                
 
     #Use this query to select the timerange in the NBS databases that you want to look at
     query  = f"SELECT original_payload, payload, add_time FROM dbo.nbs_interface WITH (NOLOCK) where add_time >= '6/16/2023' and add_time <= '6/17/2023' and original_payload is not NULL and record_status_cd = 'SUCCESS'"
@@ -1501,13 +1418,11 @@ if (__name__== "__main__"):
     
 
     for root, dirs, files in os.walk(cwd, topdown=False):
-        #print(f"Root: {root}")
-        #print(f"Zipfolder: {zipfold}")
+
         if root == zipfold:
             for file in files:
                 filePath = os.path.join(zipfold, file)
-                #print(filePath)
-                #print(f"File: {file}")
+
                 if filePath[-4:] == ".zip" and file[0:-4] not in processedFiles:
                 
                     with zipfile.ZipFile(filePath, 'r') as zip_ref:
@@ -1532,13 +1447,7 @@ if (__name__== "__main__"):
                     nowTime = datetime.datetime.now()
 
                     dateDelta = nowTime - updateTime 
-                    #print(f'File Time: {updateTime}')
-                    #print(f'Current Time: {nowTime}')
-                    #print(f'Date Difference: {dateDelta}')
-                    #print(f'Inequality: {dateDelta.days}  < {daysToSearch}')
 
-                    #if dateDelta.days <= daysToSearch:
-                        #print("Parsing")
                     try:
                         eICRParser.parse(eICRLoc)
                     except Exception as e:
@@ -1547,8 +1456,7 @@ if (__name__== "__main__"):
                         rrParser.parse(rrLoc)
                     except Exception as e:
                         print(f"Parser faild to handle RR for {file}\n Error: {e}")
-                    #else:
-                        #print("Skipped")
+
                 else:
                     print("Not a zip file")
     
@@ -1627,7 +1535,7 @@ if (__name__== "__main__"):
             xml.sax.parseString(xmlFile, myPayloadHandler)
 
         sc+=1
-    #print(sc)
+
     stageEnd = time.time()
     stageTime = stageEnd-stageStart
     print(f"Time to complete Staging Parsing: {stageTime/60}")
@@ -1641,7 +1549,7 @@ if (__name__== "__main__"):
 
 
     for row in prod_cursor:
-        #print(row)
+
         date_added = row[2]
 
         myEICRHandler = EICRHandler(output_connection, "prod", date_added)
@@ -1670,12 +1578,6 @@ if (__name__== "__main__"):
             for i in range(11):
                 xmlFile = xmlFile.replace("  ", " ")
             xmlFile = xmlFile.replace("<td/>", "")
-
-            '''
-            xml_out_row_path = f"{xml_out_filepath}prod_original_{sc}.xml"
-            with open(xml_out_row_path, 'w') as currentFile:
-                currentFile.write(xmlFile)
-            '''
             
             xml.sax.parseString(xmlFile, myEICRHandler)
 
@@ -1699,16 +1601,10 @@ if (__name__== "__main__"):
                 xmlFile = xmlFile.replace("  ", " ")
             xmlFile = xmlFile.replace("<td/>", "")
 
-            '''
-            xml_out_row_path = f"{xml_out_filepath}prod_payload_{sc}.xml"
-            with open(xml_out_row_path, 'w') as currentFile:
-                currentFile.write(xmlFile)
-            '''
-
             xml.sax.parseString(xmlFile, myPayloadHandler)
             
         pc+=1
-    #print(pc)
+
     prodEnd = time.time()
     prodTime = prodEnd-prodStart
     print(f"Time to complete prod parsing: {prodTime/60}")
@@ -1722,58 +1618,6 @@ if (__name__== "__main__"):
 
     dbStart = time.time()
     sandbox_conn = pyodbc.connect(r'')
-    query = "SELECT DISTINCT doc.OID,\
-            doc.original_OID,\
-            doc.versionControlNum,\
-            doc.location,\
-            pat.mrn,\
-            pat.given_name,\
-            pat.family_name,\
-            pat.address AS patAddr,\
-            addr.addr_state,\
-            addr.postal_code,\
-            pat.telecom as pat_telecom,\
-            gc.display_name AS gender_display,\
-            pat.pat_language,\
-            pat.dob,\
-            rc.display_name AS race_display,\
-            ec.display_name AS ethnicity_display,\
-            prov.org_name,\
-            mc.display_name AS marital_display,\
-            pat.pregnancy_status,\
-            pat.travel_history,\
-            pat.deceased,\
-            prov.root,\
-            prov.extension,\
-            doc.OID as raw_OID,\
-            doc.original_OID as orig_oid_raw,\
-            doc.date_added,\
-            pat.address AS patAddr_ID,\
-            prov_addr.addr_state as prov_state,\
-            doc.hpi,\
-            doc.dischargeDispositionCode,\
-            hcf.org_name as health_care_facility,\
-            spo.org_name as service_provider_organization,\
-            datediff(YEAR, pat.dob, doc.date_added) as age,\
-            doc.eE as eEncounter,\
-            doc.eECode as eEncounter_code,\
-            ee.display_name as eEncounter_display,\
-            doc.eventDate,\
-            hcf.extension as health_care_facility\
-            FROM \
-                    eICR_documents AS doc INNER JOIN eICR_patients AS pat ON (doc.patient = pat.UID) or (doc.oid = pat.oid)\
-                    LEFT JOIN eICR_addresses AS addr ON pat.address = addr.uid \
-                    LEFT JOIN eICR_gender_codes AS gc ON pat.gender = gc.code \
-                    LEFT JOIN eICR_race_ethnicity_codes AS rc ON pat.race = rc.code \
-                    LEFT JOIN eICR_race_ethnicity_codes AS ec ON pat.ethnicity = ec.code \
-                    LEFT JOIN eICR_provider_organizations AS prov ON pat.provider = prov.uid \
-                    LEFT JOIN eICR_provider_organizations AS hcf ON doc.healthCareFacility = hcf.uid \
-                    LEFT JOIN eICR_provider_organizations AS spo ON doc.serviceProvider = spo.uid \
-                    LEFT JOIN eICR_addresses AS prov_addr ON prov.address = prov_addr.uid \
-                    LEFT JOIN eICR_marriage_codes AS mc ON pat.marital_status = mc.code \
-                    LEFT JOIN eICR_trigger_codes AS tc ON doc.OID=tc.OID\
-                    LEFT JOIN eICR_encompassing_encounter_codes as ee ON doc.eECode=ee.code\
-            WHERE (doc.date_added >= dateadd(day,-{daysToSearch}-2,GETDATE()) or doc.eventDate >= dateadd(day,-{daysToSearch}-2,GETDATE()))"
 
     agg_results_query = "INSERT INTO eIcR_aggStepper\
                                         SELECT DISTINCT doc.OID,\
@@ -1986,9 +1830,6 @@ if (__name__== "__main__"):
     sandboxCursor = sandbox_conn.cursor()
     
     
-
-    #print("Loop Finished outputing csv")
-    #df.to_csv("missingStats.csv", index=False)
     sandboxCursor.execute(agg_results_query)
     sandboxCursor.commit()
     sandboxCursor.execute("DELETE FROM eICR_FinalResults")
