@@ -32,7 +32,7 @@ This file creates the tables where the parser data is stored.
 2. SQL software and database with table creation permissions
 
 ### Steps
-1. Fork the project
+1. Clone/Download the project
 2. Create tables in the database of choice, by running the [SQL code](SQL/TableCreation.sql) in your SQL software connected to the database where you want to create the tables.
 3. Open the Python script [eICRMissingDataGrabber.py](python/eICRMissingDataGrabber.py) and change the following lines to point to the correct locations
   * 1381-1383 - point these to your database
