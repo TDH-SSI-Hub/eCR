@@ -1501,11 +1501,7 @@ if (__name__== "__main__"):
             for i in range(11):
                 xmlFile = xmlFile.replace("  ", " ")
             xmlFile = xmlFile.replace("<td/>", "")
-            '''
-            xml_out_row_path = f"{xml_out_filepath}staging_original_{sc}.xml"
-            with open(xml_out_row_path, 'w') as currentFile:
-                currentFile.write(xmlFile)
-            '''
+
             xml.sax.parseString(xmlFile, myEICRHandler)
 
         if payload == None:
@@ -1526,11 +1522,6 @@ if (__name__== "__main__"):
             for i in range(11):
                 xmlFile = xmlFile.replace("  ", " ")
             xmlFile = xmlFile.replace("<td/>", "")
-            '''
-            xml_out_row_path = f"{xml_out_filepath}staging_payload_{sc}.xml"
-            with open(xml_out_row_path, 'w') as currentFile:
-                currentFile.write(xmlFile)
-            '''
 
             xml.sax.parseString(xmlFile, myPayloadHandler)
 
