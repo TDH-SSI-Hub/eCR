@@ -2,7 +2,6 @@
 Title: DSTT Project eICR Parser Module
 Author: Nathan Williams
 Date: 20 July 2022
-Last Updated: 30 January 2023
 Purpose: Define a SAX parser for the eICR responsses from Rhapsody, that pulls
 necissary data for Quality Assurance(QA). This will then be available for use
 in other programs that look at whole folders of eICR responses for example.
