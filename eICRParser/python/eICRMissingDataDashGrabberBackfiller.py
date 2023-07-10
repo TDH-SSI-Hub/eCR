@@ -24,7 +24,7 @@ import usefulFunctions as uf
 import numbers
 
 """
-    Update date values here
+Update date values here
 """
 myYear = 2023
 myMonth = 7
