@@ -19,7 +19,7 @@ import zipfile
 import datetime
 import time
 #Homebrew Functions
-sys.path.insert(1, "J:\\SSI\\_Nathan\\python\\")
+sys.path.insert(1, "") # Point this to the location of your downloaded usefulFunctions file
 import usefulFunctions as uf
 
 
@@ -1381,9 +1381,9 @@ if (__name__== "__main__"):
     prod_conn = pyodbc.connect(r"")
     output_connection = pyodbc.connect(r'')
 
-    zipfold = f"J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\{myDate1}"
+    zipfold = f"\\{myDate1}" #Update to point to where your zipped files are
     print(zipfold)
-    outputloc = "J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\temp\\temp2"
+    outputloc = "\\temp2" ## UPdate to point to a place for temporary unzipped files
 
     eICRName = "CDA_eICR.xml"
     RRName = "CDA_RR.xml"
@@ -1399,7 +1399,7 @@ if (__name__== "__main__"):
     staging_cursor.execute(query)
     prod_cursor.execute(query)
 
-    xml_out_filepath = "J:/SSI/_Nathan/temp_Data/"
+    xml_out_filepath = "/temp_Data/" #Update to full path of where your temp data will be
 
     #####################################################################
     # Zipped File Parsing
@@ -1407,7 +1407,7 @@ if (__name__== "__main__"):
     
     zipStart = time.time()
     print("\nStarting Zipped Parsing\n")
-    uf.set_wdir(f"J:\\NEDSS\\Rhapsody\\CloverleafImport_ECR\\4_eICR Zipped Files\\{myDate1}\\")
+    uf.set_wdir(f"\\{myDate1}\\") #Point this to the folder with the zip files you are looking for, must be named YYYY-MM-DD or other code modified to fit your process
     cwd = os.getcwd()
 
     processedFilesQuery = "SELECT original_OID FROM eICR_documents2 with (NOLOCK)"
