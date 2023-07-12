@@ -15,6 +15,9 @@ This file is for backfilling data and dates need to be manually supplied.
 ### 3. [TableCreation.sql](SQL/TableCreation.sql)
 This file creates the tables where the parser data is stored.
 
+### 4. [dataDictionary.xlsx[(Data Dictionary)
+This file details the table structure for the database.
+
 ## Running the program
 ### Required software -
 1. Python with the following packages
