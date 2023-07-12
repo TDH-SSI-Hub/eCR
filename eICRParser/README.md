@@ -15,7 +15,7 @@ This file is for backfilling data and dates need to be manually supplied.
 ### 3. [TableCreation.sql](SQL/TableCreation.sql)
 This file creates the tables where the parser data is stored.
 
-### 4. [dataDictionary.xlsx[(Data Dictionary)
+### 4. [Data Dictionary](SQL/dataDictionary.xlsx)
 This file details the table structure for the database.
 
 ## Running the program
