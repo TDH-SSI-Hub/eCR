@@ -31,13 +31,13 @@ This file details the table structure for the database.
   8. zipfile
   9. datetime
   10. time
-  11. [usefulFunctions](python/usefulFunctions.py)
+  11. [usefulFunctions](usefulFunctions.py)
 2. SQL software and database with table creation permissions
 
 ### Steps
 1. Clone/Download the project
 2. Create tables in the database of choice, by running the [SQL code](SQL/TableCreation.sql) in your SQL software connected to the database where you want to create the tables.
-3. Open the Python script [eICRMissingDataGrabber.py](python/eICRMissingDataGrabber.py) and change the following lines to point to the correct locations
+3. Open the Python script [eICRMissingDataGrabber.py](eICRMissingDataGrabber.py) and change the following lines to point to the correct locations
   * 1381-1383 - point these to your database
   * 1385, 1387 - point these to a location where you have zipped files stored if you have zip files
   * 1409-1470 - Remove or comment these out if you don't have a folder with zipped eICR messages
@@ -45,7 +45,7 @@ This file details the table structure for the database.
   * 1546-1616 - Remove or comment these out if you don't have or don't want to use an NBS production database for parsing
   * 1619 - Change for the database location where you will be putting the parsed data
 4. Run the program and trouble shoot as required
-5. If using the [backfilling script](python/eICRMissingDataGrabberBackfiller.py) update the following lines to point to the correct locations
+5. If using the [backfilling script](eICRMissingDataGrabberBackfiller.py) update the following lines to point to the correct locations
   * 1377-1379 - point these to your database
   * 1381, 1382 - point these to a location where you have zipped files stored if you have zip files
   * 1387 - Changes the dates in the query to make them fit the days you want to backfill
