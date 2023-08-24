@@ -31,7 +31,7 @@ This file details the table structure for the database.
   8. zipfile
   9. datetime
   10. time
-  11. [usefulFunctions](usefulFunctions.py)
+  11. [usefulFunctions](python/usefulFunctions.py)
 2. SQL software and database with table creation permissions
 
 ### Steps
